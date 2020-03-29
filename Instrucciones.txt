@@ -1,0 +1,7 @@
+Instrucciones:
+  Mover: Flecha
+  Ingresar: Enter
+  Añadir vacio: Espacio
+  
+ GRACIAS POR USAR MI PROGRAMA :3
+
