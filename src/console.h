@@ -1,5 +1,5 @@
-#ifndef SN_CONSOLE_H
-#define SN_CONSOLE_H
+#ifndef _SN_CONSOLE_H
+#define _SN_CONSOLE_H
 #include "color.h"
 #include "point.h"
 
@@ -8,11 +8,18 @@ namespace sn
    class Console
    {  
    public:
-      static void Init();
-      static void Clear();
-      static void SetColor(Color color);
-      static void SetCursorPos(const Point& pos);
-      static void Release();
+      virtual ~Console() {}
+      
+      virtual void events() {}
+
+      virtual void init() = 0;
+      virtual void clear() = 0;
+      virtual void setColor(Color color) = 0;
+      virtual void setCursorPos(const Point& pos) = 0;
+
+      static Console* GetInstance();
+   protected:
+      Console() = default;
    };
 } // namespace sn
 
