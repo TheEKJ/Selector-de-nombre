@@ -7,9 +7,14 @@
 
 int main()
 {
+   sn::Console* console = sn::Console::GetInstance();
+   
    // Iniciando la configuracion de la consola
-   sn::Console::Init();
+   console->init();
 
-   sn::Console::Release();
+   while(true) {
+      console->events();
+   }
+
    return 0;
 }
