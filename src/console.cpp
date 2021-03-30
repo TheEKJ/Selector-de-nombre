@@ -7,7 +7,7 @@
 
 namespace sn
 {
-   ConsoleImplType g_console;
+   static ConsoleImplType g_console;
 
    Console* Console::GetInstance()
    {
