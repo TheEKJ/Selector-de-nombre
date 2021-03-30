@@ -14,33 +14,25 @@ namespace sn
       WinConsole() {}
       ~WinConsole();
 
-      void events()
-      {
-         ReadConsoleInput(m_hConsole,
-            record,
-            128,
-            &numbers);
-
-         for(int i = 0; i < numbers; i++) {
-            switch(record[i].EventType) {
-            case KEY_EVENT:
-               printf("%c\n", record[i].Event.KeyEvent.uChar);
-               break;
-            }
-         }
-      }
-
       virtual void init() override;
       virtual void clear() override;
+
+      virtual void writeText(const char* text, const Point& pos) override;
+      virtual void fillChar(char chr, int length, const Point& pos) override;
+      virtual void setTitle(const char* title) override;
       virtual void setColor(Color color) override;
       virtual void setCursorPos(const Point& pos) override;
-   private:
-      HANDLE m_hConsole;
-      HANDLE m_hConsoleScreenBuffer;
-      DWORD m_originalConsoleMode;
 
-      INPUT_RECORD record[128];
-      DWORD numbers;
+      virtual EventQueue* queue() override;
+
+      HANDLE getStdIn();
+      HANDLE getStdOut();
+   private:
+      HANDLE m_hConsoleStdIn;
+      HANDLE m_hConsoleStdOut;
+
+      DWORD m_originalStdInMode;
+      Color m_color;
    };
 } // namespace sn
 
