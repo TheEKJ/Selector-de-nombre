@@ -5,21 +5,21 @@ namespace sn
 {
    enum Color
    {
-      DkBlue   = 1,
-      DkGreen  = 2,
-      DkCyan   = 3,
-      DkRed    = 4,
-      DkViolet = 5,
-      DkYellow = 6,
-      DkWhite  = 7,
-      DkGray   = 8,
-      Blue     = 9,
-      Green    = 10,
-      Cyan     = 11,
-      Red      = 12,
-      Violet   = 13,
-      Yellow   = 14,
-      White    = 15
+      DkBlue_Color   = 1,
+      DkGreen_Color  = 2,
+      DkCyan_Color   = 3,
+      DkRed_Color    = 4,
+      DkViolet_Color = 5,
+      DkYellow_Color = 6,
+      DkWhite_Color  = 7,
+      DkGray_Color   = 8,
+      Blue_Color     = 9,
+      Green_Color    = 10,
+      Cyan_Color     = 11,
+      Red_Color      = 12,
+      Violet_Color   = 13,
+      Yellow_Color   = 14,
+      White_Color    = 15
    };
 } // namespace sn
 
