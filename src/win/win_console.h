@@ -14,15 +14,18 @@ namespace sn
       WinConsole() {}
       ~WinConsole();
 
-      virtual void init() override;
+      virtual bool init() override;
       virtual void clear() override;
 
-      virtual void writeText(const char* text, const Point& pos) override;
       virtual void fillChar(char chr, int length, const Point& pos) override;
+      virtual void writeText(const char* text, const Point& pos) override;
+      virtual void writeCharBuffer(CharBuffer* buffer) override;
+
       virtual void setTitle(const char* title) override;
       virtual void setColor(Color color) override;
       virtual void setCursorPos(const Point& pos) override;
 
+      virtual Color color() const override;
       virtual EventQueue* queue() override;
 
       HANDLE getStdIn();
