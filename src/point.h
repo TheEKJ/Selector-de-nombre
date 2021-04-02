@@ -14,7 +14,7 @@ namespace sn
       PointT(const T& xy) : x(xy), y(xy) {}
    };
 
-   typedef PointT<short int> Point;
+   typedef PointT<short> Point;
 } // namespace sn
 
 
