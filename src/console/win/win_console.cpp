@@ -2,38 +2,41 @@
 
 #include "event_queue.h"
 #include "convert.h"
-#include "exception.h"
 #include "char_buffer.h"
 
 #include <string>
+#include <stdexcept>
 
-namespace sn
+namespace console
 {
    WinConsole::~WinConsole()
    {
       SetConsoleMode(m_hConsoleStdIn, m_originalStdInMode);
       this->setColor(m_color);
+      SetConsoleActiveScreenBuffer(GetStdHandle(STD_OUTPUT_HANDLE));
+      CloseHandle(m_hConsoleStdOut);
    }
 
    bool WinConsole::init()
    {
       m_hConsoleStdIn = GetStdHandle(STD_INPUT_HANDLE);
       m_hConsoleStdOut = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE,
-         NULL,
+         FILE_SHARE_READ | FILE_SHARE_WRITE,
          NULL,
          CONSOLE_TEXTMODE_BUFFER,
          NULL);
 
-      SetConsoleActiveScreenBuffer(m_hConsoleStdOut);
+      if(m_hConsoleStdOut == INVALID_HANDLE_VALUE ||
+         m_hConsoleStdIn == INVALID_HANDLE_VALUE)
+         return false;
+
+      if(!SetConsoleActiveScreenBuffer(m_hConsoleStdOut)) return false;
 
       if(!GetConsoleMode(m_hConsoleStdIn, &m_originalStdInMode)) return false;
       
-      if(!SetConsoleMode(m_hConsoleStdIn, m_originalStdInMode | ENABLE_WINDOW_INPUT)) return false;
+      if(!SetConsoleMode(m_hConsoleStdIn, ENABLE_WINDOW_INPUT)) return false;
 
-      CONSOLE_SCREEN_BUFFER_INFO csbi;
-      if(!GetConsoleScreenBufferInfo(m_hConsoleStdOut, &csbi)) return false;
-
-      m_color = details::to_win32(csbi.wAttributes);
+      m_color = details::from_win32(getCSBI().wAttributes);
 
       return true;
    }
@@ -41,15 +44,19 @@ namespace sn
    void WinConsole::clear()
    {
       COORD coord = {0};
-      CONSOLE_SCREEN_BUFFER_INFO csbi;
+      CONSOLE_SCREEN_BUFFER_INFO csbi = getCSBI();
       DWORD cCharsWritten;
       DWORD dwConSize;
    
-      if(!GetConsoleScreenBufferInfo(m_hConsoleStdOut, &csbi)) return;
-
       dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
 
       FillConsoleOutputCharacter(m_hConsoleStdOut, ' ', dwConSize,
+         coord,
+         &cCharsWritten);
+
+      FillConsoleOutputAttribute(m_hConsoleStdOut,
+         getCSBI().wAttributes,
+         dwConSize,
          coord,
          &cCharsWritten);
 
@@ -74,11 +81,13 @@ namespace sn
    void WinConsole::writeText(const char* text, const Point& pos)
    {
       DWORD cNumWritten;
-      WriteConsoleOutputCharacter(m_hConsoleStdOut,
+      setCursorPos(pos);
+
+      WriteConsole(m_hConsoleStdOut,
          text,
          strlen(text),
-         details::to_win32(pos),
-         &cNumWritten);
+         &cNumWritten,
+         NULL);
    }
 
    void WinConsole::writeCharBuffer(CharBuffer* buffer)
@@ -104,6 +113,22 @@ namespace sn
          &cNumWritten);
    }
 
+   std::string WinConsole::readText(const Point& pos, int length)
+   {
+      std::string result(length, '\0');
+      DWORD cNumWritten;
+
+      ReadConsoleOutputCharacter(
+         m_hConsoleStdOut,
+         &result[0],
+         result.size(),
+         details::to_win32(pos),
+         &cNumWritten
+      );
+
+      return result;
+   }
+
    void WinConsole::setTitle(const char* title)
    {
       SetConsoleTitle(title);
@@ -119,11 +144,21 @@ namespace sn
       SetConsoleCursorPosition(m_hConsoleStdOut, details::to_win32(pos));
    }
 
+   Point WinConsole::getCursorPos() const
+   {
+      return details::from_win32(getCSBI().dwCursorPosition);
+   }
+
    Color WinConsole::color() const
+   {
+      return details::from_win32(getCSBI().wAttributes);
+   }
+
+   CONSOLE_SCREEN_BUFFER_INFO WinConsole::getCSBI() const
    {
       CONSOLE_SCREEN_BUFFER_INFO csbi;
       GetConsoleScreenBufferInfo(m_hConsoleStdOut, &csbi);
-
-      return details::to_win32(csbi.wAttributes);
+      
+      return csbi;
    }
-} // namespace sn
+} // namespace console

@@ -1,6 +1,6 @@
 #include "keys.h"
 
-namespace sn
+namespace console
 {
    Keys win32_to_keys(int code)
    {
@@ -16,4 +16,4 @@ namespace sn
       default:    return Nil_Key;         break;
       }
    }
-} // namespace sn
+} // namespace console

@@ -3,7 +3,9 @@
 #include "console.h"
 #include "convert.h"
 
-namespace sn
+#include <cassert>
+
+namespace console
 {
    WinCharBuffer::WinCharBuffer(std::initializer_list<char> buffer, const Rect& rc) :
       m_rect(rc)
@@ -38,13 +40,24 @@ namespace sn
       return m_offset;
    }
 
+   Point WinCharBuffer::position() const
+   {
+      return m_rect.origin();
+   }
+
    Rect WinCharBuffer::rect() const
    {
       return m_rect;
+   }
+
+   char WinCharBuffer::getChar(int index) const
+   { 
+      assert(index >= 0 && index < m_buffer.size());
+      return m_buffer[index].Char.AsciiChar;
    }
 
    CHAR_INFO* WinCharBuffer::getCharInfo()
    {
       return &m_buffer[0];
    }
-} // namespace sn
+} // namespace console

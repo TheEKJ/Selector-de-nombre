@@ -1,11 +1,11 @@
-#ifndef _SN_WIN_CHAR_BUFFER_H
-#define _SN_WIN_CHAR_BUFFER_H
+#ifndef _SN_CONSOLE_WIN_CHAR_BUFFER_H
+#define _SN_CONSOLE_WIN_CHAR_BUFFER_H
 #include "../char_buffer.h"
 
 #include <vector>
 #include <windows.h>
 
-namespace sn
+namespace console
 {
    class WinCharBuffer : public CharBuffer
    {
@@ -17,7 +17,10 @@ namespace sn
       virtual void setOffset(const Point& offset) override;
       
       virtual Point offset() const override;
+      virtual Point position() const override;
       virtual Rect rect() const override;
+
+      virtual char getChar(int index) const override;
 
       CHAR_INFO* getCharInfo();
    private:
@@ -25,7 +28,6 @@ namespace sn
       Point m_offset;
       Rect m_rect;
    };
-} // namespace sn
-
+} // namespace console
 
 #endif

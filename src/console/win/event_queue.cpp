@@ -1,10 +1,11 @@
 #include "event_queue.h"
 
 #include "win_console.h"
-#include "exception.h"
 #include "keys.h"
 
-namespace sn
+#include <stdexcept>
+
+namespace console
 {
    static void KeyEventProc(Event& ev, KEY_EVENT_RECORD ker)
    {
@@ -22,14 +23,15 @@ namespace sn
       WinConsole* console = reinterpret_cast<WinConsole*>(Console::GetInstance());
 
       if(!ReadConsoleInput(console->getStdIn(), m_inputBuf, ARRAYSIZE(m_inputBuf), &m_cNumRead))
-         throw Exception("ReadConsoleInput error!");
+         throw std::runtime_error("ReadConsoleInput error!");
 
-      for(int i = 0; i < m_cNumRead; i++) {
+      for(DWORD i = 0; i < m_cNumRead; i++) {
          switch(m_inputBuf[i].EventType) {
          case KEY_EVENT:
             KeyEventProc(ev, m_inputBuf[i].Event.KeyEvent);
+            FlushConsoleInputBuffer(console->getStdIn());
             break;
          }
       }
    }
-} // namespace sn
+} // namespace console
