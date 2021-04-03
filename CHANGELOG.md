@@ -6,4 +6,4 @@ No pude modificar el programa por DLLs, pero a cambio he encontrado el código d
 Empezaré a mejorarlo :)
 
 ## 03/04/2021
-Finalmente he mejorado SN con clases, patrones y todo lo que aprendí este ultimo año. Fue un placer mis hermanos
+Finalmente he mejorado SN con clases, patrones y todo lo que aprendí este ultimo año. Fue un placer estar con ustedes mis hermanos
